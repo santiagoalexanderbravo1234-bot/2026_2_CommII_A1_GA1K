@@ -1,0 +1,1489 @@
+options:
+  parameters:
+    author: Grupo A1-GG
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: Recibe la senal de FSK_DCI_Fase3_Tx_USRP2920. Filtro de canal, discriminador de frecuencia, filtro acoplado, correccion del desvio Tx-Rx, sincronismo de bit (Gardner) y deteccion del mensaje.
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: FSK_Rx_USRP2920_UHD
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: 'FSK Rx USRP-2920 a 895 MHz: recepcion del mensaje conocido'
+    window_size: (1300,900)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 8
+    - 8
+    rotation: 0
+    state: enabled
+blocks:
+- name: Rb
+  id: variable
+  parameters:
+    value: '9600'
+    comment: Tasa de bits [b/s] (igual al Tx)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 8
+    - 136
+    rotation: 0
+    state: enabled
+- name: Sps
+  id: variable
+  parameters:
+    value: '10'
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 96
+    - 136
+    rotation: 0
+    state: enabled
+- name: samp_rate
+  id: variable
+  parameters:
+    value: Rb*Sps
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 184
+    - 136
+    rotation: 0
+    state: enabled
+- name: h
+  id: variable
+  parameters:
+    value: '1.0'
+    comment: Indice de modulacion (igual al Tx)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 296
+    - 136
+    rotation: 0
+    state: enabled
+- name: desviacion
+  id: variable
+  parameters:
+    value: h*Rb/2
+    comment: Desviacion de frecuencia [Hz] (igual al Tx)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 384
+    - 136
+    rotation: 0
+    state: enabled
+- name: mensaje
+  id: variable
+  parameters:
+    value: '"UIS - Comunicaciones II - Grupo A1-GG - Enlace FSK DCI. "'
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 472
+    - 136
+    rotation: 0
+    state: enabled
+- name: samp_rate_usrp
+  id: variable
+  parameters:
+    value: 250e3
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 8
+    - 224
+    rotation: 0
+    state: enabled
+- name: interp_rx
+  id: variable
+  parameters:
+    value: int(samp_rate/math.gcd(int(samp_rate_usrp),int(samp_rate)))
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 184
+    - 224
+    rotation: 0
+    state: enabled
+- name: decim_rx
+  id: variable
+  parameters:
+    value: int(samp_rate_usrp/math.gcd(int(samp_rate_usrp),int(samp_rate)))
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 320
+    - 224
+    rotation: 0
+    state: enabled
+- name: fc
+  id: variable
+  parameters:
+    value: 895e6
+    comment: Misma portadora del Tx
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 456
+    - 224
+    rotation: 0
+    state: enabled
+- name: usrp_addr
+  id: variable
+  parameters:
+    value: '"addr=192.168.10.2"'
+    comment: IP de la USRP receptora
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 560
+    - 224
+    rotation: 0
+    state: enabled
+- name: bw_canal
+  id: variable
+  parameters:
+    value: desviacion + Rb
+    comment: 'Corte del filtro de canal: media banda de Carson'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 8
+    - 312
+    rotation: 0
+    state: enabled
+- name: trans_canal
+  id: variable
+  parameters:
+    value: Rb/2
+    comment: Banda de transicion del filtro de canal
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 120
+    - 312
+    rotation: 0
+    state: enabled
+- name: alpha_dc
+  id: variable
+  parameters:
+    value: 1.0/(Sps*1000)
+    comment: Constante del promedio (~1000 bits) que estima el desvio Tx-Rx
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 232
+    - 312
+    rotation: 0
+    state: enabled
+- name: clk_bw
+  id: variable
+  parameters:
+    value: '0.045'
+    comment: Ancho de banda del lazo de sincronismo de bit
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 352
+    - 312
+    rotation: 0
+    state: enabled
+- name: media_nrz
+  id: variable
+  parameters:
+    value: 2.0*sum(bin(c).count('1') for c in mensaje.encode('ascii'))/(8*len(mensaje)) - 1
+    comment: Valor medio de los bits NRZ del mensaje (para no confundirlo con desvio de frecuencia)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 456
+    - 312
+    rotation: 0
+    state: enabled
+- name: import_0
+  id: import
+  parameters:
+    alias: ''
+    imports: import math
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 8
+    - 392
+    rotation: 0
+    state: enabled
+- name: ganancia_rx
+  id: variable_qtgui_range
+  parameters:
+    label: '"Ganancia Rx [dB]"'
+    rangeType: float
+    value: '20'
+    start: '0'
+    stop: '31.5'
+    step: '0.5'
+    widget: counter_slider
+    orient: QtCore.Qt.Horizontal
+    min_len: '200'
+    gui_hint: 0,0,1,2
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 880
+    - 8
+    rotation: 0
+    state: enabled
+- name: lbl_mensaje_tx
+  id: variable_qtgui_label
+  parameters:
+    label: '"Mensaje esperado "'
+    type: string
+    value: mensaje
+    formatter: None
+    gui_hint: 1,0,1,2
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1040
+    - 8
+    rotation: 0
+    state: enabled
+- name: texto_rx
+  id: variable_function_probe
+  parameters:
+    block_id: detector_mensaje
+    function_name: texto
+    function_args: ''
+    poll_rate: '4'
+    value: '""'
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1200
+    - 8
+    rotation: 0
+    state: enabled
+- name: cer
+  id: variable_function_probe
+  parameters:
+    block_id: detector_mensaje
+    function_name: tasa_error_caracter
+    function_args: ''
+    poll_rate: '4'
+    value: '0'
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1360
+    - 8
+    rotation: 0
+    state: enabled
+- name: estado_rx
+  id: variable_function_probe
+  parameters:
+    block_id: detector_mensaje
+    function_name: estado
+    function_args: ''
+    poll_rate: '4'
+    value: '"Buscando el mensaje..."'
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1520
+    - 8
+    rotation: 0
+    state: enabled
+- name: lbl_mensaje_rx
+  id: variable_qtgui_label
+  parameters:
+    label: '"Mensaje recibido "'
+    type: string
+    value: texto_rx
+    formatter: None
+    gui_hint: 2,0,1,2
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1200
+    - 120
+    rotation: 0
+    state: enabled
+- name: lbl_cer
+  id: variable_qtgui_label
+  parameters:
+    label: '"Tasa de error de caracter"'
+    type: real
+    value: cer
+    formatter: None
+    gui_hint: 3,0,1,1
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1360
+    - 120
+    rotation: 0
+    state: enabled
+- name: lbl_estado
+  id: variable_qtgui_label
+  parameters:
+    label: '"Estado"'
+    type: string
+    value: estado_rx
+    formatter: None
+    gui_hint: 4,0,1,2
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1520
+    - 120
+    rotation: 0
+    state: enabled
+- name: usrp_rx
+  id: uhd_usrp_source
+  parameters:
+    alias: ''
+    affinity: ''
+    minoutbuf: '0'
+    maxoutbuf: '0'
+    type: fc32
+    otw: sc16
+    stream_args: ''
+    stream_chans: '[]'
+    dev_addr: usrp_addr
+    dev_args: '""'
+    sync: none
+    start_time: '-1.0'
+    clock_rate: 0e0
+    num_mboards: '1'
+    clock_source0: ''
+    time_source0: ''
+    sd_spec0: ''
+    clock_source1: ''
+    time_source1: ''
+    sd_spec1: ''
+    clock_source2: ''
+    time_source2: ''
+    sd_spec2: ''
+    clock_source3: ''
+    time_source3: ''
+    sd_spec3: ''
+    clock_source4: ''
+    time_source4: ''
+    sd_spec4: ''
+    clock_source5: ''
+    time_source5: ''
+    sd_spec5: ''
+    clock_source6: ''
+    time_source6: ''
+    sd_spec6: ''
+    clock_source7: ''
+    time_source7: ''
+    sd_spec7: ''
+    nchan: '1'
+    samp_rate: samp_rate_usrp
+    center_freq0: fc
+    rx_agc0: Default
+    gain0: ganancia_rx
+    gain_type0: default
+    ant0: '"RX2"'
+    bw0: '0'
+    lo_source0: internal
+    lo_export0: 'False'
+    dc_offs_enb0: 'True'
+    dc_offs0: 0+0j
+    iq_imbal_enb0: 'True'
+    iq_imbal0: 0+0j
+    center_freq1: '0'
+    rx_agc1: Default
+    gain1: '0'
+    gain_type1: default
+    ant1: '"RX2"'
+    bw1: '0'
+    lo_source1: internal
+    lo_export1: 'False'
+    dc_offs_enb1: default
+    dc_offs1: 0+0j
+    iq_imbal_enb1: default
+    iq_imbal1: 0+0j
+    center_freq2: '0'
+    rx_agc2: Default
+    gain2: '0'
+    gain_type2: default
+    ant2: '"RX2"'
+    bw2: '0'
+    lo_source2: internal
+    lo_export2: 'False'
+    dc_offs_enb2: default
+    dc_offs2: 0+0j
+    iq_imbal_enb2: default
+    iq_imbal2: 0+0j
+    center_freq3: '0'
+    rx_agc3: Default
+    gain3: '0'
+    gain_type3: default
+    ant3: '"RX2"'
+    bw3: '0'
+    lo_source3: internal
+    lo_export3: 'False'
+    dc_offs_enb3: default
+    dc_offs3: 0+0j
+    iq_imbal_enb3: default
+    iq_imbal3: 0+0j
+    center_freq4: '0'
+    rx_agc4: Default
+    gain4: '0'
+    gain_type4: default
+    ant4: '"RX2"'
+    bw4: '0'
+    lo_source4: internal
+    lo_export4: 'False'
+    dc_offs_enb4: default
+    dc_offs4: 0+0j
+    iq_imbal_enb4: default
+    iq_imbal4: 0+0j
+    center_freq5: '0'
+    rx_agc5: Default
+    gain5: '0'
+    gain_type5: default
+    ant5: '"RX2"'
+    bw5: '0'
+    lo_source5: internal
+    lo_export5: 'False'
+    dc_offs_enb5: default
+    dc_offs5: 0+0j
+    iq_imbal_enb5: default
+    iq_imbal5: 0+0j
+    center_freq6: '0'
+    rx_agc6: Default
+    gain6: '0'
+    gain_type6: default
+    ant6: '"RX2"'
+    bw6: '0'
+    lo_source6: internal
+    lo_export6: 'False'
+    dc_offs_enb6: default
+    dc_offs6: 0+0j
+    iq_imbal_enb6: default
+    iq_imbal6: 0+0j
+    center_freq7: '0'
+    rx_agc7: Default
+    gain7: '0'
+    gain_type7: default
+    ant7: '"RX2"'
+    bw7: '0'
+    lo_source7: internal
+    lo_export7: 'False'
+    dc_offs_enb7: default
+    dc_offs7: 0+0j
+    iq_imbal_enb7: default
+    iq_imbal7: 0+0j
+    center_freq8: '0'
+    rx_agc8: Default
+    gain8: '0'
+    gain_type8: default
+    ant8: '"RX2"'
+    bw8: '0'
+    lo_source8: internal
+    lo_export8: 'False'
+    dc_offs_enb8: default
+    dc_offs8: 0+0j
+    iq_imbal_enb8: default
+    iq_imbal8: 0+0j
+    center_freq9: '0'
+    rx_agc9: Default
+    gain9: '0'
+    gain_type9: default
+    ant9: '"RX2"'
+    bw9: '0'
+    lo_source9: internal
+    lo_export9: 'False'
+    dc_offs_enb9: default
+    dc_offs9: 0+0j
+    iq_imbal_enb9: default
+    iq_imbal9: 0+0j
+    center_freq10: '0'
+    rx_agc10: Default
+    gain10: '0'
+    gain_type10: default
+    ant10: '"RX2"'
+    bw10: '0'
+    lo_source10: internal
+    lo_export10: 'False'
+    dc_offs_enb10: default
+    dc_offs10: 0+0j
+    iq_imbal_enb10: default
+    iq_imbal10: 0+0j
+    center_freq11: '0'
+    rx_agc11: Default
+    gain11: '0'
+    gain_type11: default
+    ant11: '"RX2"'
+    bw11: '0'
+    lo_source11: internal
+    lo_export11: 'False'
+    dc_offs_enb11: default
+    dc_offs11: 0+0j
+    iq_imbal_enb11: default
+    iq_imbal11: 0+0j
+    center_freq12: '0'
+    rx_agc12: Default
+    gain12: '0'
+    gain_type12: default
+    ant12: '"RX2"'
+    bw12: '0'
+    lo_source12: internal
+    lo_export12: 'False'
+    dc_offs_enb12: default
+    dc_offs12: 0+0j
+    iq_imbal_enb12: default
+    iq_imbal12: 0+0j
+    center_freq13: '0'
+    rx_agc13: Default
+    gain13: '0'
+    gain_type13: default
+    ant13: '"RX2"'
+    bw13: '0'
+    lo_source13: internal
+    lo_export13: 'False'
+    dc_offs_enb13: default
+    dc_offs13: 0+0j
+    iq_imbal_enb13: default
+    iq_imbal13: 0+0j
+    center_freq14: '0'
+    rx_agc14: Default
+    gain14: '0'
+    gain_type14: default
+    ant14: '"RX2"'
+    bw14: '0'
+    lo_source14: internal
+    lo_export14: 'False'
+    dc_offs_enb14: default
+    dc_offs14: 0+0j
+    iq_imbal_enb14: default
+    iq_imbal14: 0+0j
+    center_freq15: '0'
+    rx_agc15: Default
+    gain15: '0'
+    gain_type15: default
+    ant15: '"RX2"'
+    bw15: '0'
+    lo_source15: internal
+    lo_export15: 'False'
+    dc_offs_enb15: default
+    dc_offs15: 0+0j
+    iq_imbal_enb15: default
+    iq_imbal15: 0+0j
+    center_freq16: '0'
+    rx_agc16: Default
+    gain16: '0'
+    gain_type16: default
+    ant16: '"RX2"'
+    bw16: '0'
+    lo_source16: internal
+    lo_export16: 'False'
+    dc_offs_enb16: default
+    dc_offs16: 0+0j
+    iq_imbal_enb16: default
+    iq_imbal16: 0+0j
+    center_freq17: '0'
+    rx_agc17: Default
+    gain17: '0'
+    gain_type17: default
+    ant17: '"RX2"'
+    bw17: '0'
+    lo_source17: internal
+    lo_export17: 'False'
+    dc_offs_enb17: default
+    dc_offs17: 0+0j
+    iq_imbal_enb17: default
+    iq_imbal17: 0+0j
+    center_freq18: '0'
+    rx_agc18: Default
+    gain18: '0'
+    gain_type18: default
+    ant18: '"RX2"'
+    bw18: '0'
+    lo_source18: internal
+    lo_export18: 'False'
+    dc_offs_enb18: default
+    dc_offs18: 0+0j
+    iq_imbal_enb18: default
+    iq_imbal18: 0+0j
+    center_freq19: '0'
+    rx_agc19: Default
+    gain19: '0'
+    gain_type19: default
+    ant19: '"RX2"'
+    bw19: '0'
+    lo_source19: internal
+    lo_export19: 'False'
+    dc_offs_enb19: default
+    dc_offs19: 0+0j
+    iq_imbal_enb19: default
+    iq_imbal19: 0+0j
+    center_freq20: '0'
+    rx_agc20: Default
+    gain20: '0'
+    gain_type20: default
+    ant20: '"RX2"'
+    bw20: '0'
+    lo_source20: internal
+    lo_export20: 'False'
+    dc_offs_enb20: default
+    dc_offs20: 0+0j
+    iq_imbal_enb20: default
+    iq_imbal20: 0+0j
+    center_freq21: '0'
+    rx_agc21: Default
+    gain21: '0'
+    gain_type21: default
+    ant21: '"RX2"'
+    bw21: '0'
+    lo_source21: internal
+    lo_export21: 'False'
+    dc_offs_enb21: default
+    dc_offs21: 0+0j
+    iq_imbal_enb21: default
+    iq_imbal21: 0+0j
+    center_freq22: '0'
+    rx_agc22: Default
+    gain22: '0'
+    gain_type22: default
+    ant22: '"RX2"'
+    bw22: '0'
+    lo_source22: internal
+    lo_export22: 'False'
+    dc_offs_enb22: default
+    dc_offs22: 0+0j
+    iq_imbal_enb22: default
+    iq_imbal22: 0+0j
+    center_freq23: '0'
+    rx_agc23: Default
+    gain23: '0'
+    gain_type23: default
+    ant23: '"RX2"'
+    bw23: '0'
+    lo_source23: internal
+    lo_export23: 'False'
+    dc_offs_enb23: default
+    dc_offs23: 0+0j
+    iq_imbal_enb23: default
+    iq_imbal23: 0+0j
+    center_freq24: '0'
+    rx_agc24: Default
+    gain24: '0'
+    gain_type24: default
+    ant24: '"RX2"'
+    bw24: '0'
+    lo_source24: internal
+    lo_export24: 'False'
+    dc_offs_enb24: default
+    dc_offs24: 0+0j
+    iq_imbal_enb24: default
+    iq_imbal24: 0+0j
+    center_freq25: '0'
+    rx_agc25: Default
+    gain25: '0'
+    gain_type25: default
+    ant25: '"RX2"'
+    bw25: '0'
+    lo_source25: internal
+    lo_export25: 'False'
+    dc_offs_enb25: default
+    dc_offs25: 0+0j
+    iq_imbal_enb25: default
+    iq_imbal25: 0+0j
+    center_freq26: '0'
+    rx_agc26: Default
+    gain26: '0'
+    gain_type26: default
+    ant26: '"RX2"'
+    bw26: '0'
+    lo_source26: internal
+    lo_export26: 'False'
+    dc_offs_enb26: default
+    dc_offs26: 0+0j
+    iq_imbal_enb26: default
+    iq_imbal26: 0+0j
+    center_freq27: '0'
+    rx_agc27: Default
+    gain27: '0'
+    gain_type27: default
+    ant27: '"RX2"'
+    bw27: '0'
+    lo_source27: internal
+    lo_export27: 'False'
+    dc_offs_enb27: default
+    dc_offs27: 0+0j
+    iq_imbal_enb27: default
+    iq_imbal27: 0+0j
+    center_freq28: '0'
+    rx_agc28: Default
+    gain28: '0'
+    gain_type28: default
+    ant28: '"RX2"'
+    bw28: '0'
+    lo_source28: internal
+    lo_export28: 'False'
+    dc_offs_enb28: default
+    dc_offs28: 0+0j
+    iq_imbal_enb28: default
+    iq_imbal28: 0+0j
+    center_freq29: '0'
+    rx_agc29: Default
+    gain29: '0'
+    gain_type29: default
+    ant29: '"RX2"'
+    bw29: '0'
+    lo_source29: internal
+    lo_export29: 'False'
+    dc_offs_enb29: default
+    dc_offs29: 0+0j
+    iq_imbal_enb29: default
+    iq_imbal29: 0+0j
+    center_freq30: '0'
+    rx_agc30: Default
+    gain30: '0'
+    gain_type30: default
+    ant30: '"RX2"'
+    bw30: '0'
+    lo_source30: internal
+    lo_export30: 'False'
+    dc_offs_enb30: default
+    dc_offs30: 0+0j
+    iq_imbal_enb30: default
+    iq_imbal30: 0+0j
+    center_freq31: '0'
+    rx_agc31: Default
+    gain31: '0'
+    gain_type31: default
+    ant31: '"RX2"'
+    bw31: '0'
+    lo_source31: internal
+    lo_export31: 'False'
+    dc_offs_enb31: default
+    dc_offs31: 0+0j
+    iq_imbal_enb31: default
+    iq_imbal31: 0+0j
+    show_lo_controls: 'False'
+    comment: 'USRP receptora: antena en RX2, 895 MHz'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 8
+    - 480
+    rotation: 0
+    state: enabled
+- name: adaptacion_tasa
+  id: rational_resampler_xxx
+  parameters:
+    alias: ''
+    affinity: ''
+    minoutbuf: '0'
+    maxoutbuf: '0'
+    type: ccc
+    interp: interp_rx
+    decim: decim_rx
+    taps: ''
+    fbw: '0.4'
+    comment: 250 -> 96 kS/s (48/125), Sps = 10
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 280
+    - 496
+    rotation: 0
+    state: enabled
+- name: filtro_canal
+  id: low_pass_filter
+  parameters:
+    type: fir_filter_ccf
+    decim: '1'
+    interp: '1'
+    gain: '1'
+    samp_rate: samp_rate
+    cutoff_freq: bw_canal
+    width: trans_canal
+    win: window.WIN_HAMMING
+    beta: '6.76'
+    comment: Deja pasar los dos tonos y limita el ruido antes del discriminador
+    affinity: ''
+    alias: ''
+    minoutbuf: '0'
+    maxoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 500
+    - 480
+    rotation: 0
+    state: enabled
+- name: demod_fsk
+  id: analog_quadrature_demod_cf
+  parameters:
+    gain: samp_rate/(2*math.pi*desviacion)
+    comment: 'Discriminador: tono alto -> +1, tono bajo -> -1'
+    affinity: ''
+    alias: ''
+    minoutbuf: '0'
+    maxoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 740
+    - 496
+    rotation: 0
+    state: enabled
+- name: filtro_acoplado
+  id: fir_filter_xxx
+  parameters:
+    type: fff
+    decim: '1'
+    taps: '[1.0/Sps]*Sps'
+    samp_delay: '0'
+    comment: Integra un bit (pulso rectangular)
+    affinity: ''
+    alias: ''
+    minoutbuf: '0'
+    maxoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 940
+    - 488
+    rotation: 0
+    state: enabled
+- name: media_desvio
+  id: single_pole_iir_filter_xx
+  parameters:
+    type: float
+    alpha: alpha_dc
+    vlen: '1'
+    comment: Promedio lento = desvio de frecuencia Tx-Rx (normalizado)
+    affinity: ''
+    alias: ''
+    minoutbuf: '0'
+    maxoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1000
+    - 620
+    rotation: 0
+    state: enabled
+- name: quitar_desvio
+  id: blocks_sub_xx
+  parameters:
+    type: float
+    num_inputs: '2'
+    vlen: '1'
+    comment: Corrige el desvio de frecuencia entre las USRP
+    affinity: ''
+    alias: ''
+    minoutbuf: '0'
+    maxoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1200
+    - 488
+    rotation: 0
+    state: enabled
+- name: sincronismo_bit
+  id: digital_symbol_sync_xx
+  parameters:
+    type: ff
+    ted_type: digital.TED_GARDNER
+    constellation: digital.constellation_bpsk().base()
+    sps: Sps
+    ted_gain: '1.0'
+    loop_bw: clk_bw
+    damping: '1.0'
+    max_dev: '1.5'
+    osps: '1'
+    resamp_type: digital.IR_MMSE_8TAP
+    nfilters: '128'
+    pfb_mf_taps: '[]'
+    comment: 'Reloj de bit (Gardner): una muestra por bit en el centro del ojo'
+    affinity: ''
+    alias: ''
+    minoutbuf: '0'
+    maxoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1400
+    - 472
+    rotation: 0
+    state: enabled
+- name: detector_mensaje
+  id: epy_block
+  parameters:
+    alias: ''
+    affinity: ''
+    minoutbuf: '0'
+    maxoutbuf: '0'
+    _source_code: "\"\"\"\nDetector del mensaje conocido para FSK binaria (recepcion con USRP).\nEntrada: una muestra blanda por bit (salida del Symbol Sync): cerca de +1 para el\ntono alto (fc + desviacion, bit 1) y cerca de -1 para el tono bajo (fc - desviacion, bit 0).\nEl receptor real tiene incognitas que el simulador no tenia; aqui se resuelven asi:\n  - umbral de decision: punto medio entre los dos niveles recibidos (k-medias con 2 grupos),\n    para que un desvio de frecuencia residual o un mensaje con mas ceros que unos no lo sesgue,\n  - polaridad (tonos intercambiados si el espectro llega invertido),\n  - en que bit empieza cada byte (8 posibilidades),\n  - en que caracter del mensaje empieza la ventana.\nComo el mensaje es conocido, se prueban las 16 combinaciones de polaridad y alineacion y se\nelige la que mas caracteres acierta; con ella se muestran el texto recibido y la tasa de error\nde caracter.\n\"\"\"\nimport numpy as np\nfrom gnuradio import gr\n\n\nclass blk(gr.sync_block):\n    def __init__(self, mensaje='UIS - Comunicaciones II - Grupo A1-GG - Enlace FSK DCI. ', ventanas=2):\n        gr.sync_block.__init__(self, name='Detector de mensaje FSK', in_sig=[np.float32], out_sig=None)\n        self.ref = np.frombuffer(mensaje.encode('ascii'), dtype=np.uint8)\n        self.L = len(self.ref)\n        self.nb = self.L * ventanas                    # bytes por ventana de analisis\n        self.nbits = 8 * self.nb + 7                   # bits por ventana (+7 para probar alineaciones)\n        self.buf = np.zeros(0, dtype=np.float32)\n        # tabla de referencia con todos los desplazamientos ciclicos del mensaje\n        idx = (np.arange(self.L)[:, None] + np.arange(self.nb)[None, :]) % self.L\n        self.ref_shifts = self.ref[idx]                # (L, nb)\n        self.ultimo = ''\n        self.invertida = False\n        self.n_car = 0\n        self.n_err = 0\n        self.cer_ventana = 1.0\n        self.snr_db = 0.0\n        self.enganchado = False\n\n    def _umbral(self, x):\n        u = float(np.mean(x))\n        for _ in range(10):\n            alto = x[x > u]\n            bajo = x[x <= u]\n            if len(alto) == 0 or len(bajo) == 0:\n                return u\n            nuevo = 0.5 * (float(alto.mean()) + float(bajo.mean()))\n            if abs(nuevo - u) < 1e-6:\n                break\n            u = nuevo\n        d = 0.5 * (float(alto.mean()) - float(bajo.mean()))\n        var = (float(alto.var()) * len(alto) + float(bajo.var()) * len(bajo)) / len(x)\n        self.snr_db = 10.0 * np.log10(d * d / var) if var > 0 else 99.0\n        return u\n\n    def _analizar(self, x):\n        u = self._umbral(x)\n        bits = (x > u).astype(np.uint8)\n        mejor = (-1, 0, 0, None)\n        for pol in (0, 1):\n            bp = bits ^ pol\n            for off in range(8):\n                b = np.packbits(bp[off:off + 8 * self.nb])          # MSB primero\n                aciertos = (self.ref_shifts == b[None, :]).sum(axis=1)\n                k = int(np.argmax(aciertos))\n                if aciertos[k] > mejor[0]:\n                    mejor = (int(aciertos[k]), pol, k, b)\n        acier, pol, k, b = mejor\n        self.invertida = bool(pol)\n        self.cer_ventana = 1.0 - acier / self.nb\n        # el conteo empieza cuando el receptor se engancha (primera ventana con menos de 25 % de\n        # error), para que la adquisicion del sincronismo de bit no infle la tasa de error\n        if not self.enganchado and self.cer_ventana < 0.25:\n            self.enganchado = True\n        if self.enganchado:\n            self.n_car += self.nb\n            self.n_err += self.nb - acier\n        ini = (-k) % self.L                            # posicion donde empieza el mensaje\n        linea = b[ini:ini + self.L]\n        self.ultimo = ''.join(chr(c) if 32 <= c < 127 else '?' for c in linea)\n\n    def work(self, input_items, output_items):\n        x = input_items[0]\n        self.buf = np.concatenate((self.buf, x))\n        while len(self.buf) >= self.nbits:\n            self._analizar(self.buf[:self.nbits])\n \
+      \           self.buf = self.buf[self.nbits:]\n        return len(x)\n\n    def texto(self):\n        return self.ultimo\n\n    def tasa_error_caracter(self):\n        return self.n_err / self.n_car if self.n_car else 0.0\n\n    def estado(self):\n        if not self.enganchado:\n            return 'Buscando el mensaje...'\n        return 'Enganchado | polaridad %s | error ultima ventana: %.1f %% | SNR en el decisor: %.1f dB' % (\n            'invertida' if self.invertida else 'normal', 100 * self.cer_ventana, self.snr_db)\n"
+    comment: ''
+    mensaje: mensaje
+    ventanas: '2'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1660
+    - 488
+    rotation: 0
+    state: enabled
+- name: restar_media_datos
+  id: blocks_add_const_vxx
+  parameters:
+    type: float
+    const: -media_nrz
+    vlen: '1'
+    comment: ''
+    affinity: ''
+    alias: ''
+    minoutbuf: '0'
+    maxoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1200
+    - 620
+    rotation: 0
+    state: enabled
+- name: a_hz
+  id: blocks_multiply_const_vxx
+  parameters:
+    type: float
+    const: desviacion
+    vlen: '1'
+    comment: ''
+    affinity: ''
+    alias: ''
+    minoutbuf: '0'
+    maxoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1400
+    - 620
+    rotation: 0
+    state: enabled
+- name: desvio_freq
+  id: qtgui_number_sink
+  parameters:
+    alias: ''
+    affinity: ''
+    name: '"Desvio de frecuencia Tx-Rx estimado [Hz]"'
+    type: float
+    autoscale: 'False'
+    avg: '0.1'
+    graph_type: qtgui.NUM_GRAPH_NONE
+    nconnections: '1'
+    min: '-10000'
+    max: '10000'
+    update_time: '0.10'
+    gui_hint: 3,1,1,1
+    label1: '"Hz"'
+    unit1: ''
+    color1: ("black", "black")
+    factor1: '1'
+    label2: ''
+    unit2: ''
+    color2: ("black", "black")
+    factor2: '1'
+    label3: ''
+    unit3: ''
+    color3: ("black", "black")
+    factor3: '1'
+    label4: ''
+    unit4: ''
+    color4: ("black", "black")
+    factor4: '1'
+    label5: ''
+    unit5: ''
+    color5: ("black", "black")
+    factor5: '1'
+    label6: ''
+    unit6: ''
+    color6: ("black", "black")
+    factor6: '1'
+    label7: ''
+    unit7: ''
+    color7: ("black", "black")
+    factor7: '1'
+    label8: ''
+    unit8: ''
+    color8: ("black", "black")
+    factor8: '1'
+    label9: ''
+    unit9: ''
+    color9: ("black", "black")
+    factor9: '1'
+    label10: ''
+    unit10: ''
+    color10: ("black", "black")
+    factor10: '1'
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1600
+    - 620
+    rotation: 0
+    state: enabled
+- name: espectro_rx
+  id: qtgui_freq_sink_x
+  parameters:
+    alias: ''
+    affinity: ''
+    minoutbuf: '0'
+    maxoutbuf: '0'
+    type: complex
+    name: '"Espectro recibido (centrado en fc)"'
+    fftsize: '2048'
+    freqhalf: 'True'
+    wintype: window.WIN_BLACKMAN_hARRIS
+    norm_window: 'False'
+    fc: fc
+    bw: samp_rate_usrp
+    grid: 'True'
+    autoscale: 'False'
+    average: '0.2'
+    ymin: '-120'
+    ymax: '0'
+    label: Relative Gain
+    units: dB
+    nconnections: '1'
+    update_time: '0.10'
+    showports: 'False'
+    gui_hint: 5,0,4,1
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_level: '0.0'
+    tr_chan: '0'
+    tr_tag: '""'
+    ctrlpanel: 'False'
+    legend: 'False'
+    axislabels: 'True'
+    label1: ''
+    width1: '1'
+    color1: '"blue"'
+    alpha1: '1.0'
+    label2: ''''''
+    width2: '1'
+    color2: '"red"'
+    alpha2: '1.0'
+    label3: ''''''
+    width3: '1'
+    color3: '"green"'
+    alpha3: '1.0'
+    label4: ''''''
+    width4: '1'
+    color4: '"black"'
+    alpha4: '1.0'
+    label5: ''''''
+    width5: '1'
+    color5: '"cyan"'
+    alpha5: '1.0'
+    label6: ''''''
+    width6: '1'
+    color6: '"magenta"'
+    alpha6: '1.0'
+    label7: ''''''
+    width7: '1'
+    color7: '"yellow"'
+    alpha7: '1.0'
+    label8: ''''''
+    width8: '1'
+    color8: '"dark red"'
+    alpha8: '1.0'
+    label9: ''''''
+    width9: '1'
+    color9: '"dark green"'
+    alpha9: '1.0'
+    label10: ''''''
+    width10: '1'
+    color10: '"dark blue"'
+    alpha10: '1.0'
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 280
+    - 660
+    rotation: 0
+    state: enabled
+- name: senal_demodulada
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: blue
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'False'
+    entags: 'False'
+    grid: 'True'
+    gui_hint: 5,1,2,1
+    label1: Frecuencia normalizada
+    label10: Signal 10
+    label2: Q
+    label3: Signal 3
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'False'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '"Salida del discriminador (filtro acoplado, sin desvio)"'
+    nconnections: '1'
+    size: '400'
+    srate: samp_rate
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: float
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '2'
+    ymin: '-2'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1400
+    - 760
+    rotation: 0
+    state: enabled
+- name: bits_rx
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: blue
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'False'
+    entags: 'False'
+    grid: 'True'
+    gui_hint: 7,1,2,1
+    label1: Bits
+    label10: Signal 10
+    label2: Q
+    label3: Signal 3
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'False'
+    marker1: '0'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '"Muestras de decision (1 por bit): dos niveles = dos tonos"'
+    nconnections: '1'
+    size: '256'
+    srate: Rb
+    stemplot: 'False'
+    style1: '0'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: float
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '2'
+    ymin: '-2'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate:
+    - 1660
+    - 760
+    rotation: 0
+    state: enabled
+connections:
+- - usrp_rx
+  - '0'
+  - adaptacion_tasa
+  - '0'
+- - usrp_rx
+  - '0'
+  - espectro_rx
+  - '0'
+- - adaptacion_tasa
+  - '0'
+  - filtro_canal
+  - '0'
+- - filtro_canal
+  - '0'
+  - demod_fsk
+  - '0'
+- - demod_fsk
+  - '0'
+  - filtro_acoplado
+  - '0'
+- - filtro_acoplado
+  - '0'
+  - quitar_desvio
+  - '0'
+- - filtro_acoplado
+  - '0'
+  - media_desvio
+  - '0'
+- - media_desvio
+  - '0'
+  - quitar_desvio
+  - '1'
+- - media_desvio
+  - '0'
+  - restar_media_datos
+  - '0'
+- - restar_media_datos
+  - '0'
+  - a_hz
+  - '0'
+- - a_hz
+  - '0'
+  - desvio_freq
+  - '0'
+- - quitar_desvio
+  - '0'
+  - sincronismo_bit
+  - '0'
+- - quitar_desvio
+  - '0'
+  - senal_demodulada
+  - '0'
+- - sincronismo_bit
+  - '0'
+  - detector_mensaje
+  - '0'
+- - sincronismo_bit
+  - '0'
+  - bits_rx
+  - '0'
+metadata:
+  file_format: 1
+  grc_version: 3.10.12.0
